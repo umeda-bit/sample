@@ -38,7 +38,7 @@ public abstract class BaseDao {
 			if (con == null) {
 				Class.forName("com.mysql.cj.jdbc.Driver");
 				// （注意）接続するDB名、ユーザ名、パスワードはご自身の環境に合わせて設定してください！
-				String url  = "jdbc:mysql://localhost/campus";
+				String url  = "jdbc:mysql://localhost/membership";
 				String user = "root";
 				String password = "07kICVo0!";
 				// DB接続
