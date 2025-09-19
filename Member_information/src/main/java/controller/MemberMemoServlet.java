@@ -64,6 +64,6 @@ public class MemberMemoServlet extends HttpServlet {
 		}
 		// 次の画面に遷移
 		request.setAttribute("message", message);
-		request.getRequestDispatcher("list.jsp").forward(request, response);
+		request.getRequestDispatcher("Register.jsp").forward(request, response);
 	}
 }
