@@ -20,7 +20,7 @@
 					<a href="OrderServlet?item_cd=1"> <!-- 画像 --> <img
 						src="images/item_1.png" alt="商品１" width="200" height="200">
 						<p>ジュース</p></a>
-					<p class="fw-bold">￥1000</p>
+					<p class="fw-bold">￥200</p>
 				</div>
 				<div class="col-md-3 form-group">
 					<a href="OrderServlet?item_cd=2"> <!-- 画像 --> <img

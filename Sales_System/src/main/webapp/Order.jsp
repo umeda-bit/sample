@@ -81,10 +81,14 @@
 	  // 商品コードと購入数量をセッションに保存
 	  function addItem(){
 		  const quantity = quantity_element.value;
-		  sessionStorage.setItem('quantity',quantity);
-		  sessionStorage.setItem('item_name',item_name);
-		  sessionStorage.setItem('item_cd',item_cd);
-		  sessionStorage.setItem('price',price);
+		  //数量
+		  sessionStorage.setItem('quantity:'+item_cd, quantity);
+		  //商品名
+		  sessionStorage.setItem('item_name:'+item_cd, item_name);
+		  //商品コード
+		  sessionStorage.setItem('item_cd:'+item_cd, item_cd);
+		  //単価
+		  sessionStorage.setItem('price:'+item_cd, price);
 		  
 	  }
 	  
