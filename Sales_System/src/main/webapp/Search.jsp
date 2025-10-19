@@ -6,6 +6,7 @@
 <%@ page import="dao.MemberDao"%>
 <%@ page import="java.text.SimpleDateFormat"%>
 <%@ page import="java.sql.Timestamp"%>
+<%@ page import="java.util.HashMap"%>
 
 <!DOCTYPE html>
 <html>
@@ -13,8 +14,15 @@
 <!-- 共通パーツ（ヘッダー）読み込み -->
 <jsp:include page="common/header.jsp" />
 </head>
-<h1 style="color:red; border:2px solid; width: 250px; text-align:center;">管理者画面</h1>
 <body>
+	<!-- 検索への遷移ボタン -->
+	<jsp:include page="common/Ad_navi.jsp" />
+	<p>
+	<div class="fs-5 fw-bold"
+		style="color: red; border: 2px solid; width: 125px; text-align: center;">管理者画面
+	</div>
+	</p>
+	<h3 style="text-align: center;">*****商品検索*****</h3>
 	<!-- 検索条件 -->
 	<section class="py-5">
 		<div class="container">
@@ -34,7 +42,7 @@
 					<div class="col-md-2 form-group">会員コード</div>
 					<div class="col-md-3 form-group">
 						<input type="number" name="member_id" id="member_id_form"
-							class="form-control">
+							class="form-control" placeholder="会員コードを入力">
 					</div>
 					<div class="col-md-1 form-group"></div>
 					<div class="col-md-1 form-group">支払方法</div>
@@ -62,15 +70,14 @@
 					<div class="col-md-1 form-group">商品コード</div>
 					<div class="col-md-2 form-group">
 						<input type="number" name="item_cd" id="item_cd_form"
-							class="form-control">
+							class="form-control" placeholder="商品コードを入力">
 					</div>
-					<div class="col-md-2 form-group">商品名表示</div>
-					<div class="col-md-2 form-group" id="item_name">
+					<div class="col-md-4 form-group" id="item_name">
 						<!-- 商品名をリクエストスコープから取得 -->
 						<%
 						if (request.getAttribute("item_name") != null) {
 						%>
-						<%=request.getAttribute("item_name")%>
+						商品名：<span class="fs-5 fw-bold" style="color: red;"><%=request.getAttribute("item_name")%></span>
 						<%
 						}
 						%>
@@ -95,7 +102,7 @@
 		<div class="container">
 			<table class="table table-hover">
 				<!-- 見出し部分 -->
-				<thead class="thead-light">
+				<thead class="table-light">
 					<tr>
 						<th class="col-md-1">注文番号</th>
 						<th class="col-md-1">注文日</th>
@@ -110,7 +117,9 @@
 				<!-- 売上情報をリクエストスコープから取得 -->
 				<tbody id="orderList">
 					<%
-					List<SalesInformation> orderList = (List<SalesInformation>) request.getAttribute("orderList");
+					List<SalesInformation> OrderList = (List<SalesInformation>) request.getAttribute("OrderList");
+					HashMap<String, List<SalesInformation>> OrderDetailHashMap = (HashMap<String, List<SalesInformation>>) request
+							.getAttribute("OrderDetailHashMap");
 					%>
 					<%
 					String message = (String) request.getAttribute("message");
@@ -134,14 +143,19 @@
 					// 注文数カウンター
 					int order_count = 0;
 
-					if (orderList != null) {
+					if (OrderList != null) {
+
 						//拡張for文
-						for (SalesInformation orderinfo : orderList) {
+						for (SalesInformation orderinfo : OrderList) {
+							if (order_count == Integer.parseInt(orderinfo.getOrder_No())) {
+						continue;
+							}
+							order_count++;
 					%>
-					<tr>
+
+					<tr class="table-success">
 						<td>
-							<!-- 注文番号 --> <%=orderinfo.getOrder_No()%> 
-							<!-- 注文数をカウント --> <%order_count++;%>
+							<!-- 注文番号 --> <%=orderinfo.getOrder_No()%>
 						</td>
 						<!-- 注文日 -->
 						<td>
@@ -153,18 +167,16 @@
 						<!-- 会員ID：ユーザー名 -->
 						<td><%=orderinfo.getMember_Id()%>: <%=orderinfo.getUser_Name()%></td>
 						<td>
-							<!-- 支払方法 --> 
-							<%if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("0")) {%>
-							代引き 
-							<%
-							} else if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("1")) {
-							%>
-							クレジット
-							<%
-							} else if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("2")) {
-							%>
-							現金 
-							<%} else {}%>
+							<!-- 支払方法 --> <%
+ if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("0")) {
+ %> 代引き <%
+ } else if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("1")) {
+ %> クレジット <%
+ } else if (orderinfo.getPayment_Method() != null && orderinfo.getPayment_Method().equals("2")) {
+ %> 現金 <%
+ } else {
+ }
+ %>
 						</td>
 						<!-- 税込合計金額 -->
 						<td>￥<%=(int) (Integer.parseInt(orderinfo.getTotal_Amount()) * 1.1)%>
@@ -177,18 +189,13 @@
 						sum_Total_Tax += Integer.parseInt(orderinfo.getTotal_Amount()) * 0.1;
 						%>
 						<td>
-							<!-- 納品済or未納 -->
-							<%
-							if (orderinfo.getDelivery_Date() != null) {
-							%> 
-							済 
-							<%
-							} else {
-							%> 
-							未納 
-							<%
-							}
-							%>
+							<!-- 納品済or未納 --> <%
+ if (orderinfo.getDelivery_Date() != null) {
+ %> 済 <%
+ } else {
+ %> 未納 <%
+ }
+ %>
 						</td>
 						<!-- 備考 -->
 						<td><%=orderinfo.getRemarks()%></td>
@@ -196,24 +203,29 @@
 					<tr>
 						<td colspan="3"></td>
 						<td colspan="1">購入内訳</td>
-						<td colspan="3">
+						<td colspan="3" class="table-danger">
 							<%
-							for (int i = 0; i < orderinfo.getRow_No(); i++) {
-							%> <!-- 注文行番号 --> <%=orderinfo.getRow_No()%> <!-- 商品番号 --> <%=orderinfo.getItem_Cd()%>、
-							<!-- 商品名 --> <%=orderinfo.getItem_Name()%>、 <!-- 単価 --> ￥<%=orderinfo.getUnit_Price()%>、
-							<!-- 数量 --> <%=orderinfo.getQuantity()%>個 <!-- 小計 --> 小計：￥<%=orderinfo.getSubtotal()%>
-							<br> 
-							<%
-							}
-							%>
+							List<SalesInformation> OrderDetail = OrderDetailHashMap.get(orderinfo.getOrder_No());
+							%> <%
+ int i = 0;
+ for (SalesInformation order_detail_info : OrderDetail) {
+ %> <!-- 注文行番号 --><%=i + 1%> <%
+ i++;
+ %>、 <!-- 商品名 --> <%=order_detail_info.getItem_Name()%> <!-- 商品コード --> [<%=order_detail_info.getItem_Cd()%>]
+							<!-- 単価 --> ￥<%=order_detail_info.getUnit_Price()%>、 <!-- 数量 -->
+							<%=order_detail_info.getQuantity()%>個 <!-- 小計 --> 小計：￥<%=order_detail_info.getSubtotal()%>
+							<br> <%
+ }
+ %>
 						</td>
 					</tr>
 					<%
 					}
 					%>
 					<tr>
-						<td colspan="4">合計注文数：<%=order_count%></td>
-						<td colspan="8">集計金額 ￥<%=sum_Total%> (￥<%=sum_Total_Tax%>)
+						<td colspan="4">合計注文数：<span class="fs-4"><%=order_count%></span></td>
+						<td colspan="8">集計金額： ￥<span class="fs-4"><%=sum_Total%></span>
+							(うち消費税：￥<%=sum_Total_Tax%>)
 						</td>
 					</tr>
 					<%

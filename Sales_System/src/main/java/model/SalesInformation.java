@@ -24,6 +24,9 @@ public class SalesInformation {
 	private String unit_price; // 税抜単価
 	private String quantity; // 数量
 	private String subtotal; // 小計
+	private String price; // 税抜販売価格
+	private String product_category; // カテゴリ
+	private String description; // 説明
 
 	/**
 	 * コンストラクタ
@@ -44,7 +47,26 @@ public class SalesInformation {
 		this.delivery_date_flag = delivery_date_flag;
 		this.item_cd = item_cd;
 	}
+	
+	//購入内訳用
+	public SalesInformation(String order_no) {
 
+		this.order_no = order_no;
+
+	}
+	
+	//購入内訳用
+	public SalesInformation(int row_no, String item_cd,
+			String item_name, String unit_price, String quantity, String subtotal) {
+
+		this.row_no = row_no;
+		this.item_cd = item_cd;
+		this.item_name = item_name;
+		this.unit_price = unit_price;
+		this.quantity = quantity;
+		this.subtotal = subtotal;
+
+	}
 
 
 	/**
@@ -66,8 +88,7 @@ public class SalesInformation {
 	 */
 	public SalesInformation(String order_no, Timestamp order_date, String member_id,
 			String user_name, String payment_method, String total_amount,
-			String delivery_date, String remarks, int row_no, String item_cd,
-			String item_name, String unit_price, String quantity, String subtotal) {
+			String delivery_date, String remarks) {
 		this.order_no = order_no;
 		this.order_date = order_date;
 		this.member_id = member_id;
@@ -76,13 +97,15 @@ public class SalesInformation {
 		this.total_amount = total_amount;
 		this.delivery_date = delivery_date;
 		this.remarks = remarks;
-		this.row_no = row_no;
-		this.item_cd = item_cd;
-		this.item_name = item_name;
-		this.unit_price = unit_price;
-		this.quantity = quantity;
-		this.subtotal = subtotal;
 
+	}
+	
+	public SalesInformation(String item_name, String product_category,
+			String price, String description) {
+		this.item_name = item_name;
+		this.product_category = product_category;
+		this.price = price;
+		this.description = description;
 	}
 
 	/**
@@ -355,6 +378,54 @@ public class SalesInformation {
 	 */
 	public void setSubtotal(String subtotal) {
 		this.subtotal = subtotal;
+	}
+	
+	/**
+	 * 税抜商品価格を返却
+	 * @return subtotal
+	 */
+	public String getPrice() {
+		return price;
+	}
+
+	/**
+	 * 税抜商品価格をセット
+	 * @param subtotal
+	 */
+	public void setPrice(String price) {
+		this.price = price;
+	}
+	
+	/**
+	 * カテゴリを返却
+	 * @return subtotal
+	 */
+	public String getProduct_Category() {
+		return product_category;
+	}
+
+	/**
+	 * カテゴリをセット
+	 * @param subtotal
+	 */
+	public void setProduct_Category(String product_category) {
+		this.product_category = product_category;
+	}
+	
+	/**
+	 * 小計を返却
+	 * @return subtotal
+	 */
+	public String getDescription() {
+		return description;
+	}
+
+	/**
+	 * 小計をセット
+	 * @param subtotal
+	 */
+	public void setDescription(String description) {
+		this.description = description;
 	}
 
 }
